@@ -37,4 +37,22 @@ export class ProdutoController {
         }
     }
 
+    atualizar = async (req: Request, res: Response): Promise<void> => {
+        const id = +req.params.id;
+        let produto = req.body;
+        try{
+            res.json(await this.service.atualizar(id, produto));
+        } catch(err: any) {
+            res.status(err.id).json(err);
+        }
+    }
+
+    deletar = async (req: Request, res: Response): Promise<void> => {
+        const id = +req.params.id;
+        try {
+            res.json(await this.service.deletar(id));
+        } catch(err: any) {
+            res.status(err.id).json(err);
+        }
+    }
 }

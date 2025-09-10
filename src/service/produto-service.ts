@@ -26,4 +26,29 @@ export class ProdutoService {
         }
         return produto;
     }
+
+    async atualizar(id:number, produto: Produto): Promise<Produto> {
+        if(produto && produto.nome && produto.preco) {
+            const produtoAtualizado = await this.repository.atualizar(id, produto);
+            if(produtoAtualizado) {
+                return produtoAtualizado;
+            }        
+            else {
+                throw {id:404, msg: "Produto não encontrado"};
+            }
+        }
+        else {
+            throw {id:400, msg: "Produto sem dados corretos"};
+        }
+    }
+
+    async deletar(id:number) {
+        let produto = await this.repository.deletar(id);
+        if(produto) {
+            return produto;
+        }
+        else {
+            throw { id: 404, msg: "Produto não encontrado!" }
+        }
+    }
 }

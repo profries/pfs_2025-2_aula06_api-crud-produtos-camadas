@@ -16,7 +16,7 @@ export class ProdutoRepository {
 
     async listar(): Promise<Produto[]> {
         const cliente = await pool.connect();
-        const sql = `SELECT * FROM PRODUTOS`;
+        const sql = `SELECT * FROM PRODUTOS ORDER BY id`;
 
         const resultado = await cliente.query(sql);
         cliente.release();
@@ -34,4 +34,24 @@ export class ProdutoRepository {
         return resultado.rows[0];
     }
 
+    async atualizar(id: number, produto: Produto): Promise<Produto> {
+        const cliente = await pool.connect();
+        const sql = 'UPDATE produtos set nome=$1, preco=$2 WHERE id=$3 RETURNING *'
+        const values = [produto.nome, produto.preco, id];
+
+        const resultado = await cliente.query(sql, values);
+        cliente.release();
+
+        return resultado.rows[0];
+    }
+
+    async deletar(id: number): Promise<Produto> {
+        const cliente = await pool.connect();
+        const sql = `DELETE FROM PRODUTOS WHERE id=$1`;
+
+        const resultado = await cliente.query(sql, [id]);
+        cliente.release();
+
+        return resultado.rows[0];
+    }
 }
